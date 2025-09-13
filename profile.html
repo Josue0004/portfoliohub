@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Public Profile - PortfolioHub</title>
+	<link rel="stylesheet" href="styles.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="nav-brand">
+				<i class="fas fa-briefcase"></i>
+				<h1>PortfolioHub</h1>
+			</div>
+			<nav class="nav">
+				<a href="index.html" class="nav-link">
+					<i class="fas fa-home"></i>
+					<span>Back to App</span>
+				</a>
+			</nav>
+			<div class="header-actions">
+				<button class="btn btn-secondary" id="copyLinkBtn">
+					<i class="fas fa-link"></i>
+					Copy Link
+				</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="main-content">
+		<section class="section active">
+			<div class="container">
+				<div id="profileContainer" class="profile-layout" style="max-width: 1000px; margin: 0 auto;">
+					<!-- Profile will be rendered here -->
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<script>
+		function getUsers() {
+			try { return JSON.parse(localStorage.getItem('portfoliohub-users') || '[]'); } catch (e) { return []; }
+		}
+
+		function saveUsers(users) {
+			localStorage.setItem('portfoliohub-users', JSON.stringify(users));
+		}
+
+		function getCurrentUserId() {
+			try {
+				const current = JSON.parse(localStorage.getItem('portfoliohub-current-user') || 'null');
+				return current ? current.id : null;
+			} catch (e) { return null; }
+		}
+
+		function renderPublicProfile(user) {
+			const profile = user.profile;
+			const container = document.getElementById('profileContainer');
+			container.innerHTML = `
+				<div class="profile-header">
+					<div class="profile-cover">
+						<img id="profileCover" src="${profile.cover}" alt="Cover">
+					</div>
+					<div class="profile-info">
+						<div class="profile-avatar-section">
+							<img id="profileAvatar" src="${profile.avatar}" alt="Profile">
+						</div>
+						<div class="profile-details">
+							<h1 id="profileName">${profile.name}</h1>
+							<h2 id="profileTitle">${profile.title || ''}</h2>
+							<p id="profileLocation">${profile.location || 'Location not specified'}</p>
+							<div class="profile-actions">
+								<a class="btn btn-secondary" href="index.html">
+									<i class="fas fa-arrow-left"></i>
+									Open in App
+								</a>
+								<button class="btn btn-secondary" onclick="copyCurrentLink()">
+									<i class="fas fa-link"></i>
+									Share Profile
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="profile-content">
+					<div class="profile-main">
+						<div class="profile-section">
+							<h3>About</h3>
+							<p id="profileAbout">${profile.about || 'Tell people about yourself, your experience, and what you\'re passionate about.'}</p>
+						</div>
+
+						<div class="profile-section">
+							<h3>Skills & Expertise</h3>
+							<div class="skills-grid" id="profileSkills">
+								${(profile.skills && profile.skills.length) ? profile.skills.map(s => `<div class=\"skill-tag\">${s}</div>`).join('') : '<p style="color: var(--text-muted);">No skills added yet.</p>'}
+							</div>
+						</div>
+
+						<div class="profile-section">
+							<h3>Experience</h3>
+							<div class="experience-list" id="profileExperience">
+								${(profile.experience && profile.experience.length) ? profile.experience.map(exp => `
+									<div class=\"experience-item\">
+										<h4>${exp.title}</h4>
+										<p class=\"company\">${exp.company}</p>
+										<p class=\"duration\">${exp.duration}</p>
+										<p class=\"description\">${exp.description}</p>
+									</div>
+								`).join('') : '<p style="color: var(--text-muted);">No experience added yet.</p>'}
+							</div>
+						</div>
+
+						<div class="profile-section">
+							<h3>Education</h3>
+							<div class="education-list" id="profileEducation">
+								${(profile.education && profile.education.length) ? profile.education.map(edu => `
+									<div class=\"education-item\">
+										<h4>${edu.degree}</h4>
+										<p class=\"institution\">${edu.institution}</p>
+										<p class=\"duration\">${edu.duration}</p>
+									</div>
+								`).join('') : '<p style="color: var(--text-muted);">No education added yet.</p>'}
+							</div>
+						</div>
+					</div>
+
+					<div class="profile-sidebar">
+						<div class="sidebar-widget">
+							<h4>Contact Information</h4>
+							<div class="contact-info" id="profileContact">
+								<div class="contact-item">
+									<i class="fas fa-envelope"></i>
+									<span>${profile.contact?.email || ''}</span>
+								</div>
+								${profile.contact?.phone ? `
+									<div class="contact-item">
+										<i class="fas fa-phone"></i>
+										<span>${profile.contact.phone}</span>
+									</div>` : ''}
+								${profile.contact?.website ? `
+									<div class="contact-item">
+										<i class="fas fa-globe"></i>
+										<span>${profile.contact.website}</span>
+									</div>` : ''}
+							</div>
+						</div>
+
+						<div class="sidebar-widget">
+							<h4>Social Links</h4>
+							<div class="social-links" id="profileSocial">
+								${profile.contact?.linkedin ? `<a href="${profile.contact.linkedin}" target="_blank" class="social-link"><i class=\"fab fa-linkedin\"></i>LinkedIn</a>` : ''}
+								${profile.contact?.github ? `<a href="${profile.contact.github}" target="_blank" class="social-link"><i class=\"fab fa-github\"></i>GitHub</a>` : ''}
+								${profile.contact?.twitter ? `<a href="${profile.contact.twitter}" target="_blank" class="social-link"><i class=\"fab fa-twitter\"></i>Twitter</a>` : ''}
+							</div>
+						</div>
+
+						<div class="sidebar-widget">
+							<h4>Languages</h4>
+							<div class="languages-list" id="profileLanguages">
+								${(profile.languages && profile.languages.length) ? profile.languages.map(lang => `
+									<div class=\"language-item\">
+										<span class=\"language-name\">${lang.name}</span>
+										<span class=\"language-level\">${lang.level}</span>
+									</div>
+								`).join('') : '<p style="color: var(--text-muted);">No languages added yet.</p>'}
+							</div>
+						</div>
+					</div>
+				</div>
+			`;
+		}
+
+		function copyCurrentLink() {
+			const url = new URL(window.location.href);
+			if (navigator.clipboard && window.isSecureContext) {
+				navigator.clipboard.writeText(url.toString()).then(() => showToast('Profile link copied to clipboard')).catch(() => window.prompt('Copy this link:', url.toString()));
+			} else {
+				window.prompt('Copy this link:', url.toString());
+			}
+		}
+
+		function showToast(message) {
+			const note = document.createElement('div');
+			note.textContent = message;
+			note.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;padding:10px 16px;border-radius:8px;z-index:3000;box-shadow:0 10px 25px rgba(0,0,0,0.1)';
+			document.body.appendChild(note);
+			setTimeout(() => note.remove(), 2500);
+		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+			const params = new URLSearchParams(window.location.search);
+			let userId = params.get('user');
+			if (!userId || userId === 'me') {
+				userId = getCurrentUserId();
+			}
+
+			const users = getUsers();
+			const userIndex = users.findIndex(u => u.id === userId);
+			if (userIndex === -1) {
+				document.getElementById('profileContainer').innerHTML = `
+					<div class="widget" style="grid-column: 1 / -1; text-align: center;">
+						<h3>Profile Not Found</h3>
+						<p style="color: var(--text-secondary); margin-top: 8px;">The profile you are looking for does not exist on this device.</p>
+						<a href="index.html" class="btn btn-primary" style="margin-top: 16px;">Go to App</a>
+					</div>
+				`;
+				return;
+			}
+
+			// Increment views
+			const user = users[userIndex];
+			if (!user.profile.stats) user.profile.stats = { projects: 0, connections: 0, views: 0 };
+			user.profile.stats.views = (user.profile.stats.views || 0) + 1;
+			saveUsers(users);
+
+			renderPublicProfile(user);
+
+			document.getElementById('copyLinkBtn').addEventListener('click', copyCurrentLink);
+		});
+	</script>
+</body>
+</html>
+
