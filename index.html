@@ -1,0 +1,405 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PortfolioHub - Professional Portfolio Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login/Register Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h2 id="authTitle">Welcome to PortfolioHub</h2>
+                    <p id="authSubtitle">Create your professional portfolio and connect with opportunities</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+                    <button class="auth-tab" onclick="switchAuthTab('register')">Create Account</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary full-width">Sign In</button>
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="#" onclick="switchAuthTab('register')">Create one</a></p>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="registerFirstName">First Name</label>
+                            <input type="text" id="registerFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerLastName">Last Name</label>
+                            <input type="text" id="registerLastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerProfession">Profession</label>
+                        <select id="registerProfession" required>
+                            <option value="">Select your field</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Industrial Engineering">Industrial Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Aerospace Engineering">Aerospace Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Chemical Engineering">Chemical Engineering</option>
+                            <option value="Graphic Design">Graphic Design</option>
+                            <option value="UX/UI Design">UX/UI Design</option>
+                            <option value="Digital Art">Digital Art</option>
+                            <option value="Photography">Photography</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Business">Business</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary full-width">Create Account</button>
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#" onclick="switchAuthTab('login')">Sign in</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="nav-brand">
+                    <i class="fas fa-briefcase"></i>
+                    <h1>PortfolioHub</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#home" class="nav-link active" data-section="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#profile" class="nav-link" data-section="profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="#projects" class="nav-link" data-section="projects">
+                        <i class="fas fa-folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="#network" class="nav-link" data-section="network">
+                        <i class="fas fa-users"></i>
+                        <span>Network</span>
+                    </a>
+                </nav>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-menu">
+                        <button class="user-avatar" onclick="toggleUserMenu()">
+                            <img id="userAvatar" src="https://via.placeholder.com/40x40/6366f1/ffffff?text=U" alt="User">
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#profile" onclick="showSection('profile')">
+                                <i class="fas fa-user"></i>
+                                My Profile
+                            </a>
+                            <a href="#settings" onclick="showSection('settings')">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </a>
+                            <hr>
+                            <a href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="container">
+                    <div class="home-layout">
+                        <!-- Sidebar -->
+                        <aside class="home-sidebar">
+                            <div class="widget">
+                                <h3>Quick Stats</h3>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="totalProjects">0</div>
+                                        <div class="stat-label">Projects</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="totalConnections">0</div>
+                                        <div class="stat-label">Connections</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number" id="totalViews">0</div>
+                                        <div class="stat-label">Profile Views</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="widget">
+                                <h3>Recent Activity</h3>
+                                <div class="activity-list" id="recentActivity">
+                                    <div class="activity-item">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span>Welcome to PortfolioHub!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- Main Feed -->
+                        <div class="home-main">
+                            <div class="post-composer">
+                                <div class="composer-header">
+                                    <img id="composerAvatar" src="https://via.placeholder.com/40x40/6366f1/ffffff?text=U" alt="User">
+                                    <div class="composer-input">
+                                        <input type="text" placeholder="Share an update, project, or achievement..." id="postInput">
+                                    </div>
+                                </div>
+                                <div class="composer-actions">
+                                    <button class="composer-btn" onclick="openProjectModal()">
+                                        <i class="fas fa-folder-plus"></i>
+                                        Add Project
+                                    </button>
+                                    <button class="composer-btn" onclick="openPostModal()">
+                                        <i class="fas fa-image"></i>
+                                        Add Media
+                                    </button>
+                                    <button class="composer-btn" onclick="openAchievementModal()">
+                                        <i class="fas fa-trophy"></i>
+                                        Share Achievement
+                                    </button>
+                                    <button class="btn btn-primary" onclick="createPost()">Post</button>
+                                </div>
+                            </div>
+
+                            <div class="posts-feed" id="postsFeed">
+                                <!-- Posts will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="section">
+                <div class="container">
+                    <div class="profile-layout">
+                        <!-- Profile Header -->
+                        <div class="profile-header">
+                            <div class="profile-cover">
+                                <img id="profileCover" src="https://via.placeholder.com/1200x300/6366f1/ffffff?text=Cover+Photo" alt="Cover">
+                                <button class="cover-edit-btn" onclick="editCoverPhoto()">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-avatar-section">
+                                    <img id="profileAvatar" src="https://via.placeholder.com/120x120/6366f1/ffffff?text=U" alt="Profile">
+                                    <button class="avatar-edit-btn" onclick="editProfilePhoto()">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                </div>
+                                <div class="profile-details">
+                                    <h1 id="profileName">Your Name</h1>
+                                    <h2 id="profileTitle">Your Profession</h2>
+                                    <p id="profileLocation">Location</p>
+                                    <div class="profile-actions">
+                                        <button class="btn btn-primary" onclick="openProfileEditModal()">
+                                            <i class="fas fa-edit"></i>
+                                            Edit Profile
+                                        </button>
+                                        <button class="btn btn-secondary" onclick="viewCV()">
+                                            <i class="fas fa-file-pdf"></i>
+                                            View CV
+                                        </button>
+                                        <button class="btn btn-secondary" onclick="downloadCV()">
+                                            <i class="fas fa-download"></i>
+                                            Download CV
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Content -->
+                        <div class="profile-content">
+                            <div class="profile-main">
+                                <!-- About Section -->
+                                <div class="profile-section">
+                                    <h3>About</h3>
+                                    <p id="profileAbout">Tell people about yourself, your experience, and what you're passionate about.</p>
+                                </div>
+
+                                <!-- Skills Section -->
+                                <div class="profile-section">
+                                    <h3>Skills & Expertise</h3>
+                                    <div class="skills-grid" id="profileSkills">
+                                        <!-- Skills will be dynamically added -->
+                                    </div>
+                                </div>
+
+                                <!-- Experience Section -->
+                                <div class="profile-section">
+                                    <h3>Experience</h3>
+                                    <div class="experience-list" id="profileExperience">
+                                        <!-- Experience will be dynamically added -->
+                                    </div>
+                                </div>
+
+                                <!-- Education Section -->
+                                <div class="profile-section">
+                                    <h3>Education</h3>
+                                    <div class="education-list" id="profileEducation">
+                                        <!-- Education will be dynamically added -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="profile-sidebar">
+                                <!-- Contact Info -->
+                                <div class="sidebar-widget">
+                                    <h4>Contact Information</h4>
+                                    <div class="contact-info" id="profileContact">
+                                        <!-- Contact info will be dynamically added -->
+                                    </div>
+                                </div>
+
+                                <!-- Social Links -->
+                                <div class="sidebar-widget">
+                                    <h4>Social Links</h4>
+                                    <div class="social-links" id="profileSocial">
+                                        <!-- Social links will be dynamically added -->
+                                    </div>
+                                </div>
+
+                                <!-- Languages -->
+                                <div class="sidebar-widget">
+                                    <h4>Languages</h4>
+                                    <div class="languages-list" id="profileLanguages">
+                                        <!-- Languages will be dynamically added -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>My Projects</h2>
+                        <button class="btn btn-primary" onclick="openProjectModal()">
+                            <i class="fas fa-plus"></i>
+                            Add Project
+                        </button>
+                    </div>
+                    <div class="projects-grid" id="projectsGrid">
+                        <!-- Projects will be dynamically added -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Network Section -->
+            <section id="network" class="section">
+                <div class="container">
+                    <h2>Professional Network</h2>
+                    <div class="network-content">
+                        <div class="search-section">
+                            <div class="search-bar">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search professionals..." id="networkSearch">
+                            </div>
+                            <div class="filter-tabs">
+                                <button class="filter-tab active" data-filter="all">All</button>
+                                <button class="filter-tab" data-filter="cs">Computer Science</button>
+                                <button class="filter-tab" data-filter="engineering">Engineering</button>
+                                <button class="filter-tab" data-filter="design">Design</button>
+                                <button class="filter-tab" data-filter="business">Business</button>
+                            </div>
+                        </div>
+                        <div class="network-grid" id="networkGrid">
+                            <!-- Network connections will be dynamically added -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- CV Viewer Modal -->
+    <div id="cvModal" class="modal">
+        <div class="modal-content cv-modal">
+            <div class="cv-header">
+                <h3>Curriculum Vitae</h3>
+                <button class="close-btn" onclick="closeCVModal()">&times;</button>
+            </div>
+            <div class="cv-content" id="cvContent">
+                <!-- CV content will be dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Edit Modal -->
+    <div id="profileEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn" onclick="closeProfileEditModal()">&times;</button>
+            </div>
+            <form id="profileEditForm" class="profile-edit-form">
+                <!-- Profile edit form will be dynamically generated -->
+            </form>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="projectModalTitle">Add New Project</h3>
+                <button class="close-btn" onclick="closeProjectModal()">&times;</button>
+            </div>
+            <form id="projectForm" class="project-form">
+                <!-- Project form will be dynamically generated -->
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
