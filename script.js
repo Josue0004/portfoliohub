@@ -1,4 +1,4 @@
-﻿// PortfolioHub - Professional Portfolio Platform
+// PortfolioHub - Professional Portfolio Platform
 class PortfolioHub {
     constructor() {
         this.currentUser = null;
@@ -592,7 +592,10 @@ class PortfolioHub {
                 <img src="${user.profile.avatar}" alt="${user.profile.name}" class="network-avatar">
                 <h4>${user.profile.name}</h4>
                 <p>${user.profile.title}</p>
-                <button class="btn btn-sm btn-primary">Connect</button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <a class="btn btn-sm btn-secondary" href="profile.html?user=${user.id}" target="_blank">View Profile</a>
+                    <button class="btn btn-sm btn-primary">Connect</button>
+                </div>
             </div>
         `).join('');
     }
@@ -714,6 +717,39 @@ class PortfolioHub {
         };
         input.click();
     }
+
+	// Public profile sharing
+	getProfileUrl(userId = null) {
+		const id = userId || (this.currentUser && this.currentUser.id);
+		const url = new URL('profile.html', window.location.href);
+		if (id) url.searchParams.set('user', id);
+		return url.toString();
+	}
+
+	async shareProfile(userId = null) {
+		const url = this.getProfileUrl(userId);
+		const title = 'My PortfolioHub Profile';
+		const text = 'Check out this portfolio profile on PortfolioHub';
+		try {
+			if (navigator.share) {
+				await navigator.share({ title, text, url });
+			} else if (navigator.clipboard && window.isSecureContext) {
+				await navigator.clipboard.writeText(url);
+				this.showNotification('Profile link copied to clipboard', 'success');
+			} else {
+				prompt('Copy this profile link:', url);
+			}
+		} catch (e) {
+			if (navigator.clipboard && window.isSecureContext) {
+				await navigator.clipboard.writeText(url);
+				this.showNotification('Profile link copied to clipboard', 'success');
+			}
+		}
+	}
+
+	viewPublicProfile(userId = null) {
+		window.location.href = this.getProfileUrl(userId);
+	}
 }
 
 // Global Functions
@@ -775,6 +811,14 @@ function editProfilePhoto() {
 
 function editCoverPhoto() {
     portfolioHub.editCoverPhoto();
+}
+
+function shareProfile(userId) {
+	portfolioHub.shareProfile(userId);
+}
+
+function viewPublicProfile(userId) {
+	portfolioHub.viewPublicProfile(userId);
 }
 
 // Initialize the application
